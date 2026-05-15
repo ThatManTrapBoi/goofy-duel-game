@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goofy Duel Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="menu" class="menu">
+            <h1>🎮 GOOFY DUEL GAME 🎮</h1>
+            
+            <div class="selection">
+                <h2>Choose Your Bot:</h2>
+                <div class="botButtons">
+                    <button onclick="selectBot('Cool Kid')">Cool Kid</button>
+                    <button onclick="selectBot('Jimmy Boi')">Jimmy Boi</button>
+                    <button onclick="selectBot('Little Timmy')">Little Timmy</button>
+                    <button onclick="selectBot('David Bazooka')">David Bazooka</button>
+                </div>
+            </div>
+            
+            <div class="selection">
+                <h2>Choose Your Map:</h2>
+                <div class="mapButtons">
+                    <button onclick="selectMap('Steven Hawk\'s Mansion')">Steven Hawk's Mansion</button>
+                    <button onclick="selectMap('Jack\'s Boxing Ring')">Jack's Boxing Ring</button>
+                    <button onclick="selectMap('Charles Kriky\'s Basement')">Charles Kriky's Basement</button>
+                </div>
+            </div>
+            
+            <button id="startBtn" class="startBtn" onclick="startGame()" disabled>START GAME</button>
+        </div>
+        
+        <div id="gameScreen" class="gameScreen" style="display:none;">
+            <div class="gameHeader">
+                <div class="playerInfo">
+                    <h3>YOU</h3>
+                    <div class="healthBar">
+                        <div id="playerHealth" class="health" style="width: 100%;"></div>
+                    </div>
+                    <p id="playerHp">100/100</p>
+                </div>
+                
+                <div class="mapName" id="mapDisplay"></div>
+                
+                <div class="botInfo">
+                    <h3 id="botName"></h3>
+                    <div class="healthBar">
+                        <div id="botHealth" class="health" style="width: 100%;"></div>
+                    </div>
+                    <p id="botHp">100/100</p>
+                </div>
+            </div>
+            
+            <canvas id="gameCanvas" width="1000" height="600"></canvas>
+            
+            <div class="gameFooter">
+                <p id="weaponDisplay"></p>
+                <p id="abilityDisplay"></p>
+                <p id="instructions">Press SPACEBAR to Attack | Press E for Ability | Press R to use Power-Up</p>
+            </div>
+        </div>
+        
+        <div id="gameOverScreen" class="gameOverScreen" style="display:none;">
+            <div class="gameOverContent">
+                <h1 id="gameOverTitle"></h1>
+                <p id="gameOverMessage"></p>
+                <button onclick="location.reload()">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
