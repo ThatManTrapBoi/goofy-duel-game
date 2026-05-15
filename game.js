@@ -50,21 +50,30 @@ let gameState = {
 
 function selectBot(bot) {
     selectedBot = bot;
+    console.log('Selected bot:', bot);
     updateUI();
 }
 
 function selectMap(map) {
     selectedMap = map;
+    console.log('Selected map:', map);
     updateUI();
 }
 
 function updateUI() {
     const startBtn = document.getElementById('startBtn');
-    startBtn.disabled = !(selectedBot && selectedMap);
+    if (startBtn) {
+        startBtn.disabled = !(selectedBot && selectedMap);
+        console.log('Button disabled:', startBtn.disabled, 'Bot:', selectedBot, 'Map:', selectedMap);
+    }
 }
 
 function startGame() {
-    if (!selectedBot || !selectedMap) return;
+    console.log('Start game clicked!');
+    if (!selectedBot || !selectedMap) {
+        console.log('Missing bot or map');
+        return;
+    }
     
     // Reset game state
     gameState = {
@@ -90,6 +99,8 @@ function startGame() {
     document.getElementById('weaponDisplay').textContent = `Weapon: ${gameState.playerWeapon.name}`;
     document.getElementById('abilityDisplay').textContent = `Ability: ${gameState.playerAbility.name}`;
     
+    console.log('Game started!');
+    
     // Start game loop
     renderGame();
 }
@@ -106,9 +117,21 @@ function renderGame() {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // Clear canvas
-    ctx.fillStyle = MAPS[selectedMap].bg;
+    // Clear canvas with gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#0a0a0a');
+    gradient.addColorStop(1, '#1a1a2e');
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw map background
+    if (selectedMap === 'Jack\'s Boxing Ring') {
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    } else if (selectedMap === 'Charles Kriky\'s Basement') {
+        ctx.fillStyle = 'rgba(100, 100, 100, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
     
     // Draw decorative elements based on map
     drawMapElements(ctx, selectedMap);
@@ -142,23 +165,24 @@ function renderGame() {
 
 function drawMapElements(ctx, map) {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.font = 'bold 20px Arial';
     
     if (map === 'Steven Hawk\'s Mansion') {
         // Draw books
         for (let i = 0; i < 5; i++) {
             ctx.fillRect(50 + i * 30, 50 + i * 20, 20, 40);
         }
-        ctx.fillText('📚📚📚', 500, 100);
+        ctx.fillText('📚📚📚', 400, 100);
     } else if (map === 'Jack\'s Boxing Ring') {
         // Draw ring ropes
         ctx.strokeStyle = '#ffff00';
         ctx.lineWidth = 3;
         ctx.strokeRect(200, 150, 600, 300);
-        ctx.fillText('🥊 BOXING RING 🥊', 350, 500);
+        ctx.fillText('🥊 BOXING RING 🥊', 320, 500);
     } else if (map === 'Charles Kriky\'s Basement') {
         // Draw basement elements
-        ctx.fillText('🕷️ BASEMENT 🕷️', 400, 100);
-        ctx.fillText('📦 📦 📦', 100, 500);
+        ctx.fillText('🕷️ BASEMENT 🕷️', 350, 100);
+        ctx.fillText('📦 📦 📦', 50, 500);
     }
 }
 
@@ -170,6 +194,7 @@ function playerAttack() {
     gameState.botHealth = Math.max(0, gameState.botHealth);
     
     console.log(`You attacked for ${damage} damage!`);
+    renderGame();
 }
 
 function botAttack() {
@@ -180,6 +205,7 @@ function botAttack() {
     gameState.playerHealth = Math.max(0, gameState.playerHealth);
     
     console.log(`${selectedBot} attacked for ${damage} damage!`);
+    renderGame();
 }
 
 function endGame(playerWon) {
@@ -205,7 +231,7 @@ document.addEventListener('keydown', (e) => {
         playerAttack();
         setTimeout(() => {
             botAttack();
-        }, 200);
+        }, 500);
     }
     if (e.code === 'KeyE') {
         console.log('Ability used: ' + gameState.playerAbility.name);
@@ -215,8 +241,25 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Initial UI update
-updateUI();
+// Wait for DOM to load
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, updating UI');
+    updateUI();
+    
+    // Attach start button listener
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) {
+        startBtn.addEventListener('click', startGame);
+        console.log('Start button listener attached');
+    }
+});
+
+// Fallback: Also try to update UI immediately
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateUI);
+} else {
+    updateUI();
+}
 
 // Game loop for continuous rendering
 setInterval(() => {
